@@ -1,0 +1,30 @@
+version: "3"
+services:
+    camera:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        network_mode: host
+        restart: always
+        volumes:
+            - /dev/bus/usb:/dev/bus/usb
+            - /opt/vc:/opt/vc
+            - /tmp/.X11-unix:/tmp/.X11-unix
+            - ./images:/home/pi/images
+        environment:
+            LD_LIBRARY_PATH: /opt/vc/lib
+            INTERVAL: 1s
+            DISPLAY:
+        devices:
+            - "/dev/vchiq:/dev/vchiq"
+        privileged: true
+
+    webserver:
+        build:
+            context: ./fileupload_test
+            dockerfile: Dockerfile
+        restart: always
+        volumes: 
+            - ./fileupload_test:/app
+        ports: 
+            - 5000:5000
